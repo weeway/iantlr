@@ -39,4 +39,8 @@ java -Xmx500M -cp "antlr-jars/antlr-4.7.2-complete.jar:$CLASSPATH" org.antlr.v4.
 ```
 
 2. 会在`gen/doris`目录下生成解析代码，同时默认会增加来源 g4 文件的目录层级
-3. 测试代码见
+3. 解析样例见测试代码
+```shell
+1. 正例：src/test/java/com/lark/antlr/doris/DorisNormalTest.java
+2. 反例：src/test/java/com/lark/antlr/doris/DorisExceptionTest.java
+```
