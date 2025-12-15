@@ -31,6 +31,28 @@ public class DorisParserVisitorImpl extends DorisParserBaseVisitor<String> {
     }
 
     @Override
+    public String visitTruncateTable(DorisParser.TruncateTableContext ctx) {
+        // truncate table 表名解析
+        // targetTables.add();
+        targetTables.add(ctx.multipartIdentifier().getText());
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public String visitDataDesc(DorisParser.DataDescContext ctx) {
+        if(hasAncestorByClassName(ctx, "DorisParser$LoadContext")){
+            targetTables.add(ctx.targetTableName.getText());
+        }
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public String visitLoad(DorisParser.LoadContext ctx) {
+        // load 语句表名解析
+        return visitChildren(ctx);
+    }
+
+    @Override
     public String visitMultipartIdentifier(DorisParser.MultipartIdentifierContext ctx) {
         // create/alter 表名解析
         // 方法1：通过确定父语句来确定是alter还是create

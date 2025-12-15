@@ -6,7 +6,7 @@
 
     <groupId>com.lark</groupId>
     <artifactId>iantlr</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.antlr/antlr4 -->
