@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DorisParserVisitorImpl extends DorisParserBaseVisitor<String> {
     private static final Logger logger = LoggerFactory.getLogger(DorisParserVisitorImpl.class);
@@ -18,22 +19,26 @@ public class DorisParserVisitorImpl extends DorisParserBaseVisitor<String> {
     public DorisParserVisitorImpl(CommonTokenStream commonTokenStream) {
     }
 
+    /**
+     * TableNameContext 对应 g4 语法文件中的 `#tableName` 规则
+     * 是宽泛的表名定义，需要提取 multipartIdentifier 作为表名
+     * @param ctx the parse tree
+     * @return
+     */
     @Override
     public String visitTableName(DorisParser.TableNameContext ctx) {
         if (hasAncestorByRuleIndex(ctx, DorisParser.RULE_fromClause)){
-            sourceTables.add(ctx.getText());
-            logger.info("visitTableName, source table: "+ctx.getText());
+            sourceTables.add(ctx.multipartIdentifier().getText());
+            logger.info("visitTableName, source table: "+ctx.multipartIdentifier().getText());
         }else {
-            targetTables.add(ctx.getText());
-            logger.info("visitTableName, target table: "+ctx.getText());
+            targetTables.add(ctx.multipartIdentifier().getText());
+            logger.info("visitTableName, target table: "+ctx.multipartIdentifier().getText());
         }
         return visitChildren(ctx);
     }
 
     @Override
     public String visitTruncateTable(DorisParser.TruncateTableContext ctx) {
-        // truncate table 表名解析
-        // targetTables.add();
         targetTables.add(ctx.multipartIdentifier().getText());
         return visitChildren(ctx);
     }
@@ -43,6 +48,9 @@ public class DorisParserVisitorImpl extends DorisParserBaseVisitor<String> {
         if(hasAncestorByClassName(ctx, "DorisParser$LoadContext")){
             targetTables.add(ctx.targetTableName.getText());
         }
+
+        sourceTables.add(ctx.filePaths.stream().map(x->x.getText()).collect(Collectors.joining(",")));
+
         return visitChildren(ctx);
     }
 
@@ -56,10 +64,10 @@ public class DorisParserVisitorImpl extends DorisParserBaseVisitor<String> {
     public String visitMultipartIdentifier(DorisParser.MultipartIdentifierContext ctx) {
         // create/alter 表名解析
         // 方法1：通过确定父语句来确定是alter还是create
-        if (hasAncestorByClassName(ctx, "DorisParser$AlterTableContext")
-                || hasAncestorByClassName(ctx, "DorisParser$CreateTableContext")){
-            targetTables.add(ctx.getText());
-        }
+        // if (hasAncestorByClassName(ctx, "DorisParser$AlterTableContext")
+        //         || hasAncestorByClassName(ctx, "DorisParser$CreateTableContext")){
+        //     targetTables.add(ctx.getText());
+        // }
         return visitChildren(ctx);
     }
 
@@ -72,14 +80,32 @@ public class DorisParserVisitorImpl extends DorisParserBaseVisitor<String> {
     @Override public String visitCreateTable(DorisParser.CreateTableContext ctx){
         // createTable表名解析
         // 方式2: 直接通过访问createTable子句别名访问
-        logger.info("visitCreateTable: {}", ctx.multipartIdentifier().getText());
+        targetTables.add(ctx.multipartIdentifier().getText());
         return visitChildren(ctx);
     }
 
     @Override public String visitAlterTable(DorisParser.AlterTableContext ctx){
         // alterTable表名解析
         // 方式2: 直接通过访问alterTable子句别名访问
-        logger.info("visitAlterTable: {}", ctx.tableName.getText());
+        targetTables.add(ctx.tableName.getText());
+        return visitChildren(ctx);
+    }
+
+    @Override public String visitDropTable(DorisParser.DropTableContext ctx){
+        // dropTable表名解析
+        targetTables.add(ctx.multipartIdentifier().getText());
+        return visitChildren(ctx);
+    }
+
+    @Override public String visitDelete(DorisParser.DeleteContext ctx){
+        // deleteFrom表名解析
+        targetTables.add(ctx.multipartIdentifier().getText());
+        return visitChildren(ctx);
+    }
+
+    @Override public String visitUpdate(DorisParser.UpdateContext ctx){
+        // updateTable表名解析
+        targetTables.add(ctx.multipartIdentifier().getText());
         return visitChildren(ctx);
     }
 

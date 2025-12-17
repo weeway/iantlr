@@ -28,8 +28,13 @@
             <version>7.5</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>kmbigdata-release-publish</id>
+            <url>http://nexus.dev.ktvme.com/repository/maven-bigdata/</url>
+        </repository>
+    </distributionManagement>
     <build>
         <plugins>
             <plugin>

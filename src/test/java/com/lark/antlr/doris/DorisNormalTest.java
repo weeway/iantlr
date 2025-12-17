@@ -13,37 +13,37 @@ import org.testng.annotations.Test;
 public class DorisNormalTest {
     private static final Logger logger = LoggerFactory.getLogger(DorisNormalTest.class);
 
-    @DataProvider(name = "normalDorisSql")
+    @DataProvider(name = "normalDorisSqlWithReturn")
     public Object[][] providerNormalDorisSql(){
         return new Object[][]{
-//                {"selectSql", "SELECT name, address FROM dataware3.kdwcdm.kdw_table_number_one"},
-//                {"insertOverwriteSql", "INSERT OVERWRITE TABLE kdwcdm.label_generate_business_ktv_train_sample\n" +
-//                        "SELECT if(not isnull(a.customerid), a.customerid, b.customerid),\n" +
-//                        " if(isnull(b.customerid), 0, 1) as is_positive\n" +
-//                        "from(\n" +
-//                        " SELECT customerid\n" +
-//                        " from kdwcdm.label_generate_nearly_year_active_woman_cid as tbl1\n" +
-//                        " order by random()\n" +
-//                        " limit 90000\n" +
-//                        ") a FULL join kdwcdm.label_generate_business_ktv_positive_sample b \n" +
-//                        "on a.customerid = b.customerid"},
-//                {"alterTablePartitionSql", "ALTER TABLE kdwbak.log_user_visit ADD PARTITION IF NOT EXISTS p_20241217 VALUES IN ('${LastDay}')"},
-//                {"createTableSql", "CREATE TABLE if not exists kdwcdm.kdw_bas_wechat_company_coord (\n" +
-//                        "  `p_ds` date NULL,\n" +
-//                        "  `company_code` varchar(16) NULL,\n" +
-//                        "  `latitude` float NULL,\n" +
-//                        "  `longitude` float NULL, \n" +
-//                        "  `customer_id` varchar(64) NULL DEFAULT \"-1\"\n" +
-//                        ") ENGINE=OLAP\n" +
-//                        "DUPLICATE KEY(`p_ds`, `company_code`)\n" +
-//                        "COMMENT 'OLAP'\n" +
-//                        "DISTRIBUTED BY HASH(`p_ds`, `company_code`) BUCKETS 10\n" +
-//                        "PROPERTIES (\n" +
-//                        "\"file_cache_ttl_seconds\" = \"0\",\n" +
-//                        "\"light_schema_change\" = \"true\",\n" +
-//                        "\"group_commit_interval_ms\" = \"10000\",\n" +
-//                        "\"group_commit_data_bytes\" = \"134217728\"\n" +
-//                        ");"},
+                {"selectSql", "SELECT name, address FROM dataware3.kdwcdm.kdw_table_number_one"},
+                {"insertOverwriteSql", "INSERT OVERWRITE TABLE kdwcdm.label_generate_business_ktv_train_sample\n" +
+                        "SELECT if(not isnull(a.customerid), a.customerid, b.customerid),\n" +
+                        " if(isnull(b.customerid), 0, 1) as is_positive\n" +
+                        "from(\n" +
+                        " SELECT customerid\n" +
+                        " from kdwcdm.label_generate_nearly_year_active_woman_cid as tbl1\n" +
+                        " order by random()\n" +
+                        " limit 90000\n" +
+                        ") a FULL join kdwcdm.label_generate_business_ktv_positive_sample b \n" +
+                        "on a.customerid = b.customerid"},
+                {"alterTablePartitionSql", "ALTER TABLE kdwbak.log_user_visit ADD PARTITION IF NOT EXISTS p_20241217 VALUES IN ('${LastDay}')"},
+                {"createTableSql", "CREATE TABLE if not exists kdwcdm.kdw_bas_wechat_company_coord (\n" +
+                        "  `p_ds` date NULL,\n" +
+                        "  `company_code` varchar(16) NULL,\n" +
+                        "  `latitude` float NULL,\n" +
+                        "  `longitude` float NULL, \n" +
+                        "  `customer_id` varchar(64) NULL DEFAULT \"-1\"\n" +
+                        ") ENGINE=OLAP\n" +
+                        "DUPLICATE KEY(`p_ds`, `company_code`)\n" +
+                        "COMMENT 'OLAP'\n" +
+                        "DISTRIBUTED BY HASH(`p_ds`, `company_code`) BUCKETS 10\n" +
+                        "PROPERTIES (\n" +
+                        "\"file_cache_ttl_seconds\" = \"0\",\n" +
+                        "\"light_schema_change\" = \"true\",\n" +
+                        "\"group_commit_interval_ms\" = \"10000\",\n" +
+                        "\"group_commit_data_bytes\" = \"134217728\"\n" +
+                        ");"},
                 {"truncateTableSql", "truncate table kdwcdm.dws_kdwuser_middle_user_ordersong_daily_dip  partition (p_fixed_value)"},
                 {"brokerLoadDataSql", "load label dwd_log_webchatpoint_dd_ext_hourfixed_value\n" +
                         "(\n" +
@@ -59,10 +59,25 @@ public class DorisNormalTest {
                         "    \"s3.secret_key\"=\"7wnioka8qkvapfkvvkl6cnmjs6uepe\",\n" +
                         "    \"s3.region\" = \"oss-cn-hangzhou\"\n" +
                         ")"},
+                {"deleteSql", "delete from kmdatawarehouse.kdw_app_company_ad_can_distribute_company where QryDate='${LastDay}'"},
+                {"updateSql", "update kmdatawarehouse.kdw_app_company_ad_can_distribute_company set status=1"},
+                {"dropSql", "drop table kmdatawarehouse.kdw_app_company_ad_can_distribute_company"},
+                {"insertIntoSql", "INSERT INTO dataware3.kdwcdm.kdw_dws_smartktv_product_dau_monthly\n" +
+                        "SELECT\n" +
+                        "    current_timestamp() as elt_time,\n" +
+                        "    date_add('2025-12-06', interval - day('2025-12-06') as qry_date,\n" +
+                        "    1015 AS product_id,\n" +
+                        "    '桌贴二维码' AS product_name,\n" +
+                        "    1 AS metric_type,\n" +
+                        "    COUNT(DISTINCT openid) AS metric_value\n" +
+                        "FROM kdwcdm.dwd_log_webchatpoint_dd_ext\n" +
+                        "WHERE p_ds BETWEEN date_add('2025-12-06', interval - day('2025-12-06') + 1 day)\n" +
+                        "\tAND last_day('2025-12-06')\n" +
+                        "AND event = '11011200';"}
         };
     }
 
-    @Test(dataProvider = "normalDorisSql")
+    @Test(dataProvider = "normalDorisSqlWithReturn")
     public void runParse(String label, String sql) {
         sql = sql.toUpperCase();
         logger.info("label=[{}], SQL=[{}]", label, sql);
@@ -78,5 +93,37 @@ public class DorisNormalTest {
         String result = visitor.visit(pt);
         logger.info("label=[{}], sourceTables=[{}], targetTables=[{}]", label, visitor.sourceTables, visitor.targetTables);
         logger.info("label=[{}], visit result=[{}]", label, result);
+
+        assert !visitor.targetTables.isEmpty() || !visitor.sourceTables.isEmpty();
+    }
+
+
+    @DataProvider(name = "normalDorisSqlWithoutReturn")
+    public Object[][] providerNormalData(){
+        return new Object[][]{
+            {"setSql", "set sql_mode=''"},
+            {"useSql", "use kmdatawarehouse"},
+            {"refreshSql", "refresh catalog dataware3"},
+        };
+    }
+
+    @Test(dataProvider = "normalDorisSqlWithoutReturn")
+    public void runParseWithoutReturn(String label, String sql) {
+        sql = sql.toUpperCase();
+        logger.info("label=[{}], SQL=[{}]", label, sql);
+        DorisLexer dorisLexer = new DorisLexer(CharStreams.fromString(sql));
+        CommonTokenStream tokenStream = new CommonTokenStream(dorisLexer);
+
+        DorisParser dorisParser = new DorisParser(tokenStream);
+        dorisParser.removeErrorListeners();
+        dorisParser.addErrorListener(new ErrorListener());
+        ParseTree pt = dorisParser.multiStatements();
+        DorisParserVisitorImpl visitor = new DorisParserVisitorImpl(tokenStream);
+
+        String result = visitor.visit(pt);
+        logger.info("label=[{}], sourceTables=[{}], targetTables=[{}]", label, visitor.sourceTables, visitor.targetTables);
+        logger.info("label=[{}], visit result=[{}]", label, result);
+
+        assert visitor.targetTables.isEmpty() && visitor.sourceTables.isEmpty();
     }
 }
