@@ -1,7 +1,9 @@
-package com.lark.antlr.doris;
+package com.lark.antlr.doris4;
 
 import com.lark.antlr.common.ErrorListener;
-import com.lark.antlr.doris.impl.DorisParserVisitorImpl;
+import com.lark.antlr.doris4.DorisLexer;
+import com.lark.antlr.doris4.DorisParser;
+import com.lark.antlr.doris4.impl.DorisParserVisitorImpl;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -81,10 +83,10 @@ public class DorisNormalTest {
     public void runParse(String label, String sql) {
         sql = sql.toUpperCase();
         logger.info("label=[{}], SQL=[{}]", label, sql);
-        DorisLexer dorisLexer = new DorisLexer(CharStreams.fromString(sql));
+        com.lark.antlr.doris4.DorisLexer dorisLexer = new com.lark.antlr.doris4.DorisLexer(CharStreams.fromString(sql));
         CommonTokenStream tokenStream = new CommonTokenStream(dorisLexer);
 
-        DorisParser dorisParser = new DorisParser(tokenStream);
+        com.lark.antlr.doris4.DorisParser dorisParser = new com.lark.antlr.doris4.DorisParser(tokenStream);
         dorisParser.removeErrorListeners();
         dorisParser.addErrorListener(new ErrorListener());
         ParseTree pt = dorisParser.multiStatements();

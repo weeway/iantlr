@@ -1,4 +1,5 @@
 // Generated from /Users/waywee/self-improve/iantlr/grammer4/doris4_0_2-rc02/DorisLexer.g4 by ANTLR 4.13.1
+package com.lark.antlr.doris4;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

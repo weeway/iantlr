@@ -21,7 +21,7 @@ jenv versions
 jenv local 11.0
 
 # 查看 antlr4 命令可用选项
- java -Xmx500M -cp "antlr-jars/antlr-4.13.1-complete.jar:$CLASSPATH" org.antlr.v4.Tool
+java -Xmx500M -cp "antlr-jars/antlr-4.13.1-complete.jar:$CLASSPATH" org.antlr.v4.Tool
 ```
 
 ## 生成解析代码
@@ -29,13 +29,8 @@ jenv local 11.0
 ### Doris 解析代码生成
 1. 执行生成命令
 ```shell
-# 生成Lexer
-java -Xmx500M -cp "antlr-jars/antlr-4.7.2-complete.jar:$CLASSPATH" org.antlr.v4.Tool -Dlanguage=Java -visitor -listener -o gen/doris -package com.lark.antlr.doris 
- grammer4/doris/DorisLexer.g4
-
 # 生成 Parser
-java -Xmx500M -cp "antlr-jars/antlr-4.7.2-complete.jar:$CLASSPATH" org.antlr.v4.Tool -Dlanguage=Java -visitor -listener -o gen/doris -package com.lark.antlr.doris 
- grammer4/doris/DorisParser.g4
+java -Xmx500M -cp "antlr-jars/antlr-4.13.1-complete.jar:$CLASSPATH" org.antlr.v4.Tool -o /Users/waywee/self-improve/iantlr/gen/doris4 -package com.lark.doris -Dlanguage=Java -listener -visitor -lib /Users/waywee/self-improve/iantlr/grammer4/doris4_0_2-rc02 /Users/waywee/self-improve/iantlr/grammer4/doris4_0_2-rc02/DorisParser.g4 /Users/waywee/self-improve/iantlr/grammer4/doris4_0_2-rc02/DorisLexer.g4
 ```
 
 2. 会在`gen/doris`目录下生成解析代码，同时默认会增加来源 g4 文件的目录层级
